@@ -20,7 +20,8 @@ APP_ENV=production
 APP_DEBUG=false
 LOG_CHANNEL=stderr
 
-DB_CONNECTION=pgsql      # atau mysql
+DB_CONNECTION=pgsql      # atau mysql; otomatis pgsql jika memakai DATABASE_URL/POSTGRES_URL
+DB_URL=postgresql://...  # dapat memakai DATABASE_URL atau POSTGRES_URL dari Neon
 DB_HOST=...
 DB_PORT=5432             # 3306 jika mysql
 DB_DATABASE=...

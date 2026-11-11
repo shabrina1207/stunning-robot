@@ -59,7 +59,7 @@ ENV PORT=80 \
     APP_ENV=production \
     APP_DEBUG=false \
     APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
-    VERCEL_DEMO_MODE=true \
+    VERCEL_DEMO_MODE=false \
     DB_CONNECTION=sqlite \
     DB_DATABASE=/app/database/database.sqlite \
     LOG_CHANNEL=stderr \

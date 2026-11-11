@@ -3,6 +3,15 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+$hasExternalDatabase = (bool) (
+    env('DB_URL')
+    || env('DATABASE_URL')
+    || env('POSTGRES_URL')
+    || env('DB_HOST')
+);
+$useDemoDatabase = filter_var(env('VERCEL_DEMO_MODE', false), FILTER_VALIDATE_BOOL)
+    && ! $hasExternalDatabase;
+
 return [
 
     /*
@@ -18,7 +27,7 @@ return [
     */
 
     // Vercel/Neon commonly expose DATABASE_URL or POSTGRES_URL instead of DB_URL.
-    'default' => env('VERCEL_DEMO_MODE', false)
+    'default' => $useDemoDatabase
         ? 'sqlite'
         : env(
             'DB_CONNECTION',
@@ -40,8 +49,8 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('VERCEL_DEMO_MODE', false) ? null : env('DB_URL'),
-            'database' => env('VERCEL_DEMO_MODE', false)
+            'url' => $useDemoDatabase ? null : env('DB_URL'),
+            'database' => $useDemoDatabase
                 ? database_path('database.sqlite')
                 : env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',

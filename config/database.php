@@ -17,8 +17,9 @@ $containsPlaceholder = str_contains($databaseConfigText, 'host_asli')
 $hasExternalDatabase = ! $containsPlaceholder && (bool) (
     $databaseUrl || env('DB_HOST')
 );
-$useDemoDatabase = filter_var(env('VERCEL_DEMO_MODE', false), FILTER_VALIDATE_BOOL)
-    && ! $hasExternalDatabase;
+$useDemoDatabase = $containsPlaceholder
+    || (filter_var(env('VERCEL_DEMO_MODE', false), FILTER_VALIDATE_BOOL)
+        && ! $hasExternalDatabase);
 
 return [
 

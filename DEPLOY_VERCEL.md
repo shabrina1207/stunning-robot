@@ -29,10 +29,12 @@ DB_USERNAME=...
 DB_PASSWORD=...
 DB_SSLMODE=require       # umum untuk PostgreSQL managed
 
-SESSION_DRIVER=database
-CACHE_STORE=database
+SESSION_DRIVER=cookie
+CACHE_STORE=array
 QUEUE_CONNECTION=sync
 ```
+
+Jika sebelumnya pernah menambahkan `SESSION_DRIVER=database` atau `CACHE_STORE=database` di Vercel, hapus atau ubah keduanya agar tidak membutuhkan tabel `sessions` dan `cache`.
 
 Jangan menyalin file `.env` ke repository. `APP_KEY`, kredensial database, dan kredensial SMTP harus disimpan sebagai Environment Variables/Secrets di Vercel.
 
@@ -57,7 +59,7 @@ Alternatifnya, import repository dari dashboard Vercel. Pastikan Root Directory 
 
 ## Migrasi database
 
-Jalankan migrasi satu kali terhadap database produksi dari lingkungan yang memiliki PHP 8.3+ dan akses ke database:
+Jalankan migrasi satu kali terhadap database produksi dari lingkungan yang memiliki PHP 8.3+ dan akses ke database. Session dan cache tidak perlu dimigrasikan karena deployment memakai cookie/array:
 
 ```powershell
 php artisan migrate --force

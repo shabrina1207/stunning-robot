@@ -18,7 +18,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    // Cookie sessions are portable across Vercel instances. Set SESSION_DRIVER=database
+    // only when a shared sessions table is intentionally provisioned.
+    'driver' => env('SESSION_DRIVER', 'cookie'),
 
     /*
     |--------------------------------------------------------------------------

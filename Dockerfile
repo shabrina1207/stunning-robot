@@ -60,8 +60,7 @@ ENV PORT=80 \
     APP_DEBUG=false \
     APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
     VERCEL_DEMO_MODE=false \
-    DB_CONNECTION=sqlite \
-    DB_DATABASE=/app/database/database.sqlite \
+    DB_CONNECTION=mysql \
     LOG_CHANNEL=stderr \
     SESSION_DRIVER=cookie \
     CACHE_STORE=array \

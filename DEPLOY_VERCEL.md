@@ -2,13 +2,13 @@
 
 Konfigurasi deployment memakai Docker + FrankenPHP. Jalur ini menjalankan seluruh aplikasi Laravel melalui `public/index.php`, sehingga file konfigurasi dan source code di luar `public` tidak menjadi document root.
 
-Mode cepat saat ini memakai SQLite yang dibuat dan diisi otomatis saat Docker image dibangun. Mode ini cocok untuk demo; data transaksi tidak dijamin permanen ketika instance Vercel diganti atau disk container dibersihkan. Untuk production, matikan `VERCEL_DEMO_MODE` dan gunakan PostgreSQL/Neon.
+Production memakai MySQL eksternal agar data transaksi pelanggan, kasir, dan admin tersimpan pada database yang sama. SQLite hanya digunakan saat proses build/demo lokal; SQLite tidak cocok untuk penyimpanan transaksi di Vercel.
 
 ## Prasyarat
 
 - Repository sudah tersedia di GitHub, GitLab, atau Bitbucket.
 - Akun Vercel.
-- Database eksternal PostgreSQL atau MySQL. SQLite lokal tidak cocok untuk produksi di Vercel.
+- Database eksternal MySQL. SQLite lokal tidak cocok untuk produksi di Vercel.
 - Vercel CLI jika ingin deploy dari terminal: `npm i -g vercel`.
 
 ## Environment Variables Vercel
@@ -16,21 +16,20 @@ Mode cepat saat ini memakai SQLite yang dibuat dan diisi otomatis saat Docker im
 Tambahkan variabel berikut pada Environment `Production` dan `Preview` sesuai kebutuhan:
 
 ```text
-VERCEL_DEMO_MODE=true
+VERCEL_DEMO_MODE=false
 APP_KEY=base64:...       # gunakan key yang stabil untuk satu environment
 APP_URL=https://app-five-neon-79.vercel.app
 APP_ENV=production
 APP_DEBUG=false
 LOG_CHANNEL=stderr
 
-DB_CONNECTION=sqlite     # mode demo cepat; gunakan pgsql untuk production
-DB_URL=postgresql://...  # hanya diperlukan untuk mode pgsql/production
-DB_HOST=...
-DB_PORT=5432             # 3306 jika mysql
+DB_CONNECTION=mysql
+DB_URL=mysql://USERNAME:PASSWORD@HOST:3306/DATABASE
+DB_HOST=HOST
+DB_PORT=3306
 DB_DATABASE=...
 DB_USERNAME=...
 DB_PASSWORD=...
-DB_SSLMODE=require       # umum untuk PostgreSQL managed
 
 SESSION_DRIVER=cookie
 CACHE_STORE=array

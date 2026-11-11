@@ -3,11 +3,19 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
-$hasExternalDatabase = (bool) (
-    env('DB_URL')
-    || env('DATABASE_URL')
-    || env('POSTGRES_URL')
-    || env('DB_HOST')
+$databaseUrl = trim((string) (env('DB_URL') ?: env('DATABASE_URL') ?: env('POSTGRES_URL')));
+$databaseConfigText = strtolower(implode(' ', [
+    $databaseUrl,
+    (string) env('DB_HOST'),
+    (string) env('DB_DATABASE'),
+    (string) env('DB_USERNAME'),
+]));
+$containsPlaceholder = str_contains($databaseConfigText, 'host_asli')
+    || str_contains($databaseConfigText, 'user:password')
+    || str_contains($databaseConfigText, 'dbname')
+    || str_contains($databaseConfigText, 'database');
+$hasExternalDatabase = ! $containsPlaceholder && (bool) (
+    $databaseUrl || env('DB_HOST')
 );
 $useDemoDatabase = filter_var(env('VERCEL_DEMO_MODE', false), FILTER_VALIDATE_BOOL)
     && ! $hasExternalDatabase;

@@ -32,11 +32,20 @@ COPY . .
 COPY --from=assets /app/public/build ./public/build
 
 RUN mkdir -p \
+        database \
         storage/framework/cache \
         storage/framework/sessions \
         storage/framework/views \
         bootstrap/cache \
-    && composer dump-autoload --no-dev --classmap-authoritative
+    && composer dump-autoload --no-dev --classmap-authoritative \
+    && touch database/database.sqlite \
+    && APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
+       VERCEL_DEMO_MODE=true \
+       DB_CONNECTION=sqlite \
+       DB_DATABASE=/app/database/database.sqlite \
+       SESSION_DRIVER=cookie \
+       CACHE_STORE=array \
+       php artisan migrate:fresh --seed --force
 
 FROM base AS runtime
 
@@ -49,6 +58,10 @@ RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp \
 ENV PORT=80 \
     APP_ENV=production \
     APP_DEBUG=false \
+    APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
+    VERCEL_DEMO_MODE=true \
+    DB_CONNECTION=sqlite \
+    DB_DATABASE=/app/database/database.sqlite \
     LOG_CHANNEL=stderr \
     SESSION_DRIVER=cookie \
     CACHE_STORE=array \

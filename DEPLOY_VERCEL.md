@@ -2,6 +2,8 @@
 
 Konfigurasi deployment memakai Docker + FrankenPHP. Jalur ini menjalankan seluruh aplikasi Laravel melalui `public/index.php`, sehingga file konfigurasi dan source code di luar `public` tidak menjadi document root.
 
+Mode cepat saat ini memakai SQLite yang dibuat dan diisi otomatis saat Docker image dibangun. Mode ini cocok untuk demo; data transaksi tidak dijamin permanen ketika instance Vercel diganti atau disk container dibersihkan. Untuk production, matikan `VERCEL_DEMO_MODE` dan gunakan PostgreSQL/Neon.
+
 ## Prasyarat
 
 - Repository sudah tersedia di GitHub, GitLab, atau Bitbucket.
@@ -14,14 +16,15 @@ Konfigurasi deployment memakai Docker + FrankenPHP. Jalur ini menjalankan seluru
 Tambahkan variabel berikut pada Environment `Production` dan `Preview` sesuai kebutuhan:
 
 ```text
+VERCEL_DEMO_MODE=true
 APP_KEY=base64:...       # gunakan key yang stabil untuk satu environment
 APP_URL=https://domain-anda.vercel.app
 APP_ENV=production
 APP_DEBUG=false
 LOG_CHANNEL=stderr
 
-DB_CONNECTION=pgsql      # atau mysql; otomatis pgsql jika memakai DATABASE_URL/POSTGRES_URL
-DB_URL=postgresql://...  # dapat memakai DATABASE_URL atau POSTGRES_URL dari Neon
+DB_CONNECTION=sqlite     # mode demo cepat; gunakan pgsql untuk production
+DB_URL=postgresql://...  # hanya diperlukan untuk mode pgsql/production
 DB_HOST=...
 DB_PORT=5432             # 3306 jika mysql
 DB_DATABASE=...

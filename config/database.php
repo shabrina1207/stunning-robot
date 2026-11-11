@@ -18,10 +18,12 @@ return [
     */
 
     // Vercel/Neon commonly expose DATABASE_URL or POSTGRES_URL instead of DB_URL.
-    'default' => env(
-        'DB_CONNECTION',
-        (env('DB_URL') || env('DATABASE_URL') || env('POSTGRES_URL')) ? 'pgsql' : 'sqlite'
-    ),
+    'default' => env('VERCEL_DEMO_MODE', false)
+        ? 'sqlite'
+        : env(
+            'DB_CONNECTION',
+            (env('DB_URL') || env('DATABASE_URL') || env('POSTGRES_URL')) ? 'pgsql' : 'sqlite'
+        ),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,8 +40,10 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'url' => env('VERCEL_DEMO_MODE', false) ? null : env('DB_URL'),
+            'database' => env('VERCEL_DEMO_MODE', false)
+                ? database_path('database.sqlite')
+                : env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             'busy_timeout' => null,

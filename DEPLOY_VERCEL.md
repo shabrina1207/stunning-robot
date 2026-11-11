@@ -18,7 +18,7 @@ Tambahkan variabel berikut pada Environment `Production` dan `Preview` sesuai ke
 ```text
 VERCEL_DEMO_MODE=true
 APP_KEY=base64:...       # gunakan key yang stabil untuk satu environment
-APP_URL=https://domain-anda.vercel.app
+APP_URL=https://app-five-neon-79.vercel.app
 APP_ENV=production
 APP_DEBUG=false
 LOG_CHANNEL=stderr

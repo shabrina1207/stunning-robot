@@ -10,7 +10,9 @@ $databaseConfigText = strtolower(implode(' ', [
     (string) env('DB_DATABASE'),
     (string) env('DB_USERNAME'),
 ]));
-$containsPlaceholder = str_contains($databaseConfigText, 'host_asli')
+$databaseHost = strtolower(trim((string) env('DB_HOST')));
+$containsPlaceholder = in_array($databaseHost, ['127.0.0.1', 'localhost', '::1'], true)
+    || str_contains($databaseConfigText, 'host_asli')
     || str_contains($databaseConfigText, 'user:password')
     || str_contains($databaseConfigText, 'dbname')
     || str_contains($databaseConfigText, 'database');

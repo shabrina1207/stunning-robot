@@ -40,6 +40,24 @@ Jika sebelumnya pernah menambahkan `SESSION_DRIVER=database` atau `CACHE_STORE=d
 
 Jangan menyalin file `.env` ke repository. `APP_KEY`, kredensial database, dan kredensial SMTP harus disimpan sebagai Environment Variables/Secrets di Vercel.
 
+## Menggunakan Railway MySQL
+
+Buat service MySQL dari dashboard Railway, lalu salin connection string `MYSQL_URL` yang diberikan Railway ke Environment Variables Vercel. Gunakan environment `Production` dan `Preview` bila keduanya diperlukan:
+
+```text
+DB_CONNECTION=mysql
+DB_URL=mysql://USERNAME:PASSWORD@HOST:PORT/DATABASE
+MYSQL_URL=mysql://USERNAME:PASSWORD@HOST:PORT/DATABASE
+VERCEL_DEMO_MODE=false
+```
+
+Jangan gunakan `DB_HOST=127.0.0.1`, karena itu menunjuk ke container Vercel, bukan ke Railway. Setelah variable disimpan, lakukan redeploy lalu jalankan migrasi MySQL satu kali dari komputer yang memiliki akses ke URL tersebut:
+
+```powershell
+php artisan migrate --force
+php artisan db:seed --force
+```
+
 ## Deploy pertama kali
 
 ```powershell

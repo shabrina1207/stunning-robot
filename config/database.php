@@ -3,7 +3,12 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
-$databaseUrl = trim((string) (env('DB_URL') ?: env('DATABASE_URL') ?: env('POSTGRES_URL')));
+$databaseUrl = trim((string) (
+    env('DB_URL')
+    ?: env('MYSQL_URL')
+    ?: env('DATABASE_URL')
+    ?: env('POSTGRES_URL')
+));
 $databaseConfigText = strtolower(implode(' ', [
     $databaseUrl,
     (string) env('DB_HOST'),
@@ -37,12 +42,13 @@ return [
     |
     */
 
-    // Vercel/Neon commonly expose DATABASE_URL or POSTGRES_URL instead of DB_URL.
+    // Railway commonly exposes MYSQL_URL; Vercel integrations may expose DB_URL.
     'default' => $useDemoDatabase
         ? 'sqlite'
         : env(
             'DB_CONNECTION',
-            (env('DB_URL') || env('DATABASE_URL') || env('POSTGRES_URL')) ? 'pgsql' : 'sqlite'
+            (env('DB_URL') || env('MYSQL_URL')) ? 'mysql'
+                : ((env('DATABASE_URL') || env('POSTGRES_URL')) ? 'pgsql' : 'sqlite')
         ),
 
     /*
@@ -74,7 +80,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL'),
+            'url' => env('DB_URL', env('MYSQL_URL')),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -94,7 +100,7 @@ return [
 
         'mariadb' => [
             'driver' => 'mariadb',
-            'url' => env('DB_URL'),
+            'url' => env('DB_URL', env('MYSQL_URL')),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),

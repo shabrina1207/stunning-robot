@@ -16,7 +16,7 @@ Route::get('/', function () {
 Route::get('/order', [OrderController::class, 'index'])->name('order.index');
 
 // 3. Route untuk memproses dan menyimpan transaksi pesanan
-Route::post('/order', [OrderController::class, 'store']);
+Route::post('/order', [OrderController::class, 'store'])->middleware('throttle:orders');
 
 // 4. Route tampilan struk / nota sukses setelah pembayaran
 Route::get('/order/success/{id}', [OrderController::class, 'success'])->name('order.success');
@@ -27,7 +27,7 @@ Route::get('/order/success/{id}', [OrderController::class, 'success'])->name('or
 // Route Login Kasir (Hanya bisa diakses jika belum login)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login.process');
 });
 
 // Route Logout & Halaman Dashboard Kasir (Hanya bisa diakses jika sudah login)

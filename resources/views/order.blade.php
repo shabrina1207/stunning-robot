@@ -121,10 +121,10 @@
                     <img src="{{ asset('images/qr.jpg') }}" alt="QRIS" class="img-fluid border rounded p-2 shadow-sm" style="width: 220px; height: 220px; object-fit: contain;">
                 </div>
                 <p class="fw-bold text-warning fs-5 mb-0" id="qris-total-display">Rp 0</p>
-                <small class="text-muted d-block mt-1">Setelah berhasil transfer, klik tombol di bawah ini.</small>
+                <small class="text-muted d-block mt-1">Pembayaran akan dikonfirmasi oleh kasir/admin.</small>
             </div>
             <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-success w-100 rounded-pill fw-bold py-2" id="btn-selesai-qris">Saya Sudah Bayar</button>
+                <button type="button" class="btn btn-outline-secondary w-100 rounded-pill fw-bold py-2" data-bs-dismiss="modal">Lihat Status Pesanan</button>
             </div>
         </div>
     </div>
@@ -235,15 +235,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 redirectSuccessUrl = data.redirect_url;
                 
-                // Jika QRIS, tampilkan pop-up QRIS
+                // QRIS dan tunai sama-sama menunggu konfirmasi kasir/admin.
                 if (data.is_qris) {
                     modalPembayaran.hide();
                     qrisTotalDisplay.textContent = 'Rp ' + totalHarga.toLocaleString('id-ID');
                     modalQRIS.show();
-                } else {
-                    // Jika Tunai, langsung pindah ke struk
-                    window.location.href = redirectSuccessUrl;
                 }
+
+                window.setTimeout(function () {
+                    window.location.href = redirectSuccessUrl;
+                }, data.is_qris ? 1200 : 0);
             } else {
                 alert('Gagal: ' + data.message);
             }
@@ -254,12 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 5. Klik 'Saya Sudah Bayar' pada Modal QRIS
-    document.getElementById('btn-selesai-qris').addEventListener('click', function() {
-        if (redirectSuccessUrl) {
-            window.location.href = redirectSuccessUrl;
-        }
-    });
 });
 </script>
 

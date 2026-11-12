@@ -20,6 +20,7 @@ Route::post('/order', [OrderController::class, 'store'])->middleware('throttle:o
 
 // 4. Route tampilan struk / nota sukses setelah pembayaran
 Route::get('/order/success/{id}', [OrderController::class, 'success'])->name('order.success');
+Route::get('/order/status/{id}', [OrderController::class, 'status'])->name('order.status');
 
 
 // ================= ROUTES KASIR =================

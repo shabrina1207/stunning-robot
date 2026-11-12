@@ -20,6 +20,14 @@
 
 <div class="container">
     <div class="receipt-card">
+        @php
+            $paymentStatus = $order->status_verifikasi ?? 'pending';
+            $isVerified = $paymentStatus === 'verified';
+            $isRejected = $paymentStatus === 'rejected';
+            $metode = strtolower((string) ($order->metode_pembayaran ?? $order->payment_method ?? ''));
+        @endphp
+
+        @if($isVerified)
         <!-- Status & Arahan Kasir -->
         <div class="text-center mb-3">
             <div class="text-success fs-1 no-print">✓</div>
@@ -103,5 +111,33 @@
     </div>
 </div>
 
+        @else
+            <div class="text-center">
+                <div class="text-warning fs-1">⏳</div>
+                <h4 class="fw-bold">Menunggu Konfirmasi Pembayaran</h4>
+                @if($isRejected)
+                    <div class="alert alert-danger">Pembayaran ditolak. Silakan hubungi kasir.</div>
+                @else
+                    <div class="alert alert-warning">Pembayaran sedang menunggu konfirmasi admin/kasir. Struk akan muncul otomatis setelah dikonfirmasi.</div>
+                    <div class="spinner-border text-warning my-3" role="status" aria-label="Memeriksa status pembayaran"></div>
+                    <p class="text-muted small">Jangan tutup halaman ini.</p>
+                @endif
+                <p>Kode transaksi: <strong>{{ $order->kode_pesanan ?? $order->id }}</strong></p>
+                <a href="/order" class="btn btn-outline-secondary">Kembali ke Menu</a>
+            </div>
+            @if(!$isRejected)
+                <script>
+                    const statusUrl = @json(route('order.status', $order->id));
+                    const checkPaymentStatus = async () => {
+                        try {
+                            const response = await fetch(statusUrl, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+                            const data = await response.json();
+                            if (data.status_verifikasi === 'verified' || data.status_verifikasi === 'rejected') window.location.reload();
+                        } catch (error) { console.warn('Status pembayaran belum dapat diperiksa.', error); }
+                    };
+                    window.setInterval(checkPaymentStatus, 5000);
+                </script>
+            @endif
+        @endif
 </body>
 </html>

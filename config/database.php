@@ -5,7 +5,8 @@ use Pdo\Mysql;
 
 $databaseUrl = trim((string) (
     env('DB_URL')
-    ?: env('MYSQL_URL')
+      ?: env('MYSQL_PUBLIC_URL')
+      ?: env('MYSQL_URL')
     ?: env('DATABASE_URL')
     ?: env('POSTGRES_URL')
 ));
@@ -47,7 +48,7 @@ return [
         ? 'sqlite'
         : env(
             'DB_CONNECTION',
-            (env('DB_URL') || env('MYSQL_URL')) ? 'mysql'
+      (env('DB_URL') || env('MYSQL_PUBLIC_URL') || env('MYSQL_URL')) ? 'mysql'
                 : ((env('DATABASE_URL') || env('POSTGRES_URL')) ? 'pgsql' : 'sqlite')
         ),
 
@@ -80,7 +81,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL', env('MYSQL_URL')),
+      'url' => env('DB_URL', env('MYSQL_PUBLIC_URL', env('MYSQL_URL'))),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -100,7 +101,7 @@ return [
 
         'mariadb' => [
             'driver' => 'mariadb',
-            'url' => env('DB_URL', env('MYSQL_URL')),
+      'url' => env('DB_URL', env('MYSQL_PUBLIC_URL', env('MYSQL_URL'))),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),

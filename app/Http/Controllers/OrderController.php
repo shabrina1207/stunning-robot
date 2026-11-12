@@ -122,4 +122,14 @@ class OrderController extends Controller
         $order = Order::with('orderDetails.menu')->findOrFail($id);
         return view('order_success', compact('order'));
     }
+
+    public function status($id)
+    {
+        $order = Order::findOrFail($id);
+
+        return response()->json([
+            'status_verifikasi' => $order->status_verifikasi ?? 'pending',
+            'status' => $order->status,
+        ]);
+    }
 }
